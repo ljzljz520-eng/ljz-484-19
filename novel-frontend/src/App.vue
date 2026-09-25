@@ -7,8 +7,11 @@
             <span class="logo-icon">📚</span>
             Novels
           </router-link>
-          
-           <!-- Placeholder for nav/search -->
+
+          <nav class="header-nav">
+            <router-link to="/" class="nav-link" exact-active-class="active">书库</router-link>
+            <router-link to="/admin" class="nav-link" active-class="active">作者后台</router-link>
+          </nav>
         </div>
       </header>
       <main class="app-main">
@@ -31,9 +34,9 @@ const locale = zhCn
 <style scoped>
 .app-header {
   height: 64px;
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -41,6 +44,7 @@ const locale = zhCn
 .header-content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 100%;
 }
 .logo {
@@ -55,6 +59,25 @@ const locale = zhCn
 }
 .logo-icon {
   -webkit-text-fill-color: initial;
+}
+.header-nav {
+  display: flex;
+  gap: 24px;
+}
+.nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-sub);
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.nav-link:hover {
+  color: var(--primary-color);
+}
+.nav-link.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
 }
 .app-main {
   min-height: calc(100vh - 64px);

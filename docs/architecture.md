@@ -18,8 +18,8 @@
   - Web 服务器: Nginx (用于前端部署及 API 代理)
 
 ## 3. 逻辑架构
-- **表现层**: 基于 Vue 3 的单页应用 (SPA)，通过 Axios 与后端进行 RESTful 通信。
-- **业务逻辑层**: Spring Boot 控制器处理业务逻辑。
+- **表现层**: 基于 Vue 3 的单页应用 (SPA)，通过 Axios 与后端进行 RESTful 通信；含读者侧页面与作者后台（稿件导出）。
+- **业务逻辑层**: Spring Boot 控制器 + 服务层（如稿件导出 `ExportService`），统一异常处理返回结构化错误码。
 - **数据访问层**: 内存型数据仓库 (In-memory Repository)，通过 `ConcurrentHashMap` 模拟数据库交互。
 
 ## 4. 部署架构

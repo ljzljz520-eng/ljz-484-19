@@ -1,6 +1,7 @@
 package com.novel.repository;
 
 import com.novel.model.Chapter;
+import com.novel.model.ChapterStatus;
 import com.novel.model.Novel;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class DataRepository {
+        /** 章节排序：按序号升序，序号缺失的排最后，再按 ID 兜底，避免空指针。 */
+        private static final Comparator<Chapter> BY_ORDER_NO = Comparator
+                        .comparing(Chapter::getOrderNo, Comparator.nullsLast(Comparator.naturalOrder()))
+                        .thenComparing(Chapter::getId, Comparator.nullsLast(Comparator.naturalOrder()));
+
         private final Map<Long, Novel> novels = new ConcurrentHashMap<>();
         private final Map<Long, Chapter> chapters = new ConcurrentHashMap<>();
         private final AtomicLong novelIdGenerator = new AtomicLong(1);
@@ -34,6 +40,9 @@ public class DataRepository {
                                 "第二章：变量声明", 2, "“你是谁？”面前的机器人冷冷地问道。“Define me.”他回答。", LocalDateTime.now()));
                 chapters.put(chapterIdGenerator.get(), new Chapter(chapterIdGenerator.getAndIncrement(), novel1.getId(),
                                 "第三章：循环陷阱", 3, "时间仿佛陷入了死循环，他必须找到 break 的条件。", LocalDateTime.now()));
+                chapters.put(chapterIdGenerator.get(), new Chapter(chapterIdGenerator.getAndIncrement(), novel1.getId(),
+                                "第四章：异常捕获（草稿）", 4, "try 住最后的机会，catch 住她的目光……（未完待续）",
+                                LocalDateTime.now(), ChapterStatus.DRAFT));
 
                 Novel novel2 = new Novel(novelIdGenerator.getAndIncrement(),
                                 "灵气复苏时代的架构师",
@@ -46,6 +55,9 @@ public class DataRepository {
                                 "第一章：单体应用破碎", 1, "天地巨变，世界原本的秩序（Monolith）崩塌了。", LocalDateTime.now()));
                 chapters.put(chapterIdGenerator.get(), new Chapter(chapterIdGenerator.getAndIncrement(), novel2.getId(),
                                 "第二章：服务发现", 2, "他感应到了周围的灵气节点，就像注册中心里的服务一样清晰。", LocalDateTime.now()));
+                chapters.put(chapterIdGenerator.get(), new Chapter(chapterIdGenerator.getAndIncrement(), novel2.getId(),
+                                "第三章：熔断结界（草稿）", 3, "灵气洪流即将冲垮经脉，他急布下一道熔断结界……（大纲待定）",
+                                LocalDateTime.now(), ChapterStatus.DRAFT));
 
                 Novel novel3 = new Novel(novelIdGenerator.getAndIncrement(),
                                 "只有我知道剧情的测试员",
@@ -76,14 +88,54 @@ public class DataRepository {
                 return novels.get(id);
         }
 
+        /** 返回该作品的全部章节（含草稿），按章节序号升序。 */
         public List<Chapter> findChaptersByNovelId(Long novelId) {
                 return chapters.values().stream()
                                 .filter(c -> c.getNovelId().equals(novelId))
-                                .sorted(Comparator.comparing(Chapter::getOrderNo))
+                                .sorted(BY_ORDER_NO)
+                                .collect(Collectors.toList());
+        }
+
+        /** 仅返回已发布章节，供读者侧页面使用。 */
+        public List<Chapter> findPublishedChaptersByNovelId(Long novelId) {
+                return chapters.values().stream()
+                                .filter(c -> c.getNovelId().equals(novelId))
+                                .filter(c -> c.getStatus() == ChapterStatus.PUBLISHED)
+                                .sorted(BY_ORDER_NO)
                                 .collect(Collectors.toList());
         }
 
         public Chapter findChapterById(Long id) {
                 return chapters.get(id);
+        }
+
+        /** 新增/更新作品（若 ID 为空则自动分配），返回保存后的实体。 */
+        public Novel saveNovel(Novel novel) {
+                if (novel.getId() == null) {
+                        novel.setId(novelIdGenerator.getAndIncrement());
+                } else {
+                        novelIdGenerator.accumulateAndGet(novel.getId() + 1, Math::max);
+                }
+                novels.put(novel.getId(), novel);
+                return novel;
+        }
+
+        /** 新增/更新章节（若 ID 为空则自动分配），返回保存后的实体。 */
+        public Chapter saveChapter(Chapter chapter) {
+                if (chapter.getId() == null) {
+                        chapter.setId(chapterIdGenerator.getAndIncrement());
+                } else {
+                        chapterIdGenerator.accumulateAndGet(chapter.getId() + 1, Math::max);
+                }
+                chapters.put(chapter.getId(), chapter);
+                return chapter;
+        }
+
+        public void deleteChapter(Long id) {
+                chapters.remove(id);
+        }
+
+        public void deleteNovel(Long id) {
+                novels.remove(id);
         }
 }
