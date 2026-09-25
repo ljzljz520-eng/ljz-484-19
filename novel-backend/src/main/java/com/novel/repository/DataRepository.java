@@ -1,6 +1,7 @@
 package com.novel.repository;
 
 import com.novel.model.Chapter;
+import com.novel.model.ChapterStatus;
 import com.novel.model.Novel;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,9 @@ public class DataRepository {
                                 "第二章：变量声明", 2, "“你是谁？”面前的机器人冷冷地问道。“Define me.”他回答。", LocalDateTime.now()));
                 chapters.put(chapterIdGenerator.get(), new Chapter(chapterIdGenerator.getAndIncrement(), novel1.getId(),
                                 "第三章：循环陷阱", 3, "时间仿佛陷入了死循环，他必须找到 break 的条件。", LocalDateTime.now()));
+                chapters.put(chapterIdGenerator.get(), new Chapter(chapterIdGenerator.getAndIncrement(), novel1.getId(),
+                                "第四章：空指针（草稿）", 4, "他凝视着虚无，第一次理解了 NullPointerException 的恐惧……",
+                                ChapterStatus.DRAFT, LocalDateTime.now()));
 
                 Novel novel2 = new Novel(novelIdGenerator.getAndIncrement(),
                                 "灵气复苏时代的架构师",
@@ -46,6 +50,9 @@ public class DataRepository {
                                 "第一章：单体应用破碎", 1, "天地巨变，世界原本的秩序（Monolith）崩塌了。", LocalDateTime.now()));
                 chapters.put(chapterIdGenerator.get(), new Chapter(chapterIdGenerator.getAndIncrement(), novel2.getId(),
                                 "第二章：服务发现", 2, "他感应到了周围的灵气节点，就像注册中心里的服务一样清晰。", LocalDateTime.now()));
+                chapters.put(chapterIdGenerator.get(), new Chapter(chapterIdGenerator.getAndIncrement(), novel2.getId(),
+                                "第三章：熔断之道（草稿）", 3, "当攻击如洪峰袭来，他掐诀念咒：Hystrix，熔断！",
+                                ChapterStatus.DRAFT, LocalDateTime.now()));
 
                 Novel novel3 = new Novel(novelIdGenerator.getAndIncrement(),
                                 "只有我知道剧情的测试员",

@@ -25,7 +25,8 @@
 - `GET /api/novels`: 获取小说列表（支持分页与搜索）。
 - `GET /api/novels/{id}`: 获取小说详细信息及章节目录。
 - `GET /api/chapters/{id}`: 获取具体章节正文内容。
+- `GET /api/novels/{id}/export?mode=published|full`: 导出按 OrderNo 顺序合并的章节文本（.txt，`Content-Disposition` 携带带作品名与日期的文件名）。失败时以错误码区分 `CHAPTER_DATA_CORRUPTED`（422，章节数据损坏）与 `EXPORT_FILE_WRITE_FAILED`（500，文件写入问题）。
 
 ## 5. 数据模型
 - **Novel (小说)**: ID, Title, Description, CoverUrl, CreatedAt.
-- **Chapter (章节)**: ID, NovelId, Title, OrderNo, Content, CreatedAt.
+- **Chapter (章节)**: ID, NovelId, Title, OrderNo, Content, Status (DRAFT/PUBLISHED), CreatedAt.

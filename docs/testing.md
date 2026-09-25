@@ -16,6 +16,20 @@
 - `GET /api/novels`: 返回 200，JSON 包含分页数据。
 - `GET /api/novels/1`: 返回书籍详情及章节数据。
 - `GET /api/chapters/1`: 正确返回正文字符串。
+- `GET /api/novels/1/export?mode=published`: 返回 200 与 `Content-Disposition: attachment; filename*=UTF-8''..._已发布章节.txt`，正文不含草稿章节。
+- `GET /api/novels/1/export?mode=full`: 文件名带 `_完整稿件`，草稿章节包含在内并带【草稿】标记。
+- `GET /api/novels/999/export`: 返回 404，错误码 `RESOURCE_NOT_FOUND`。
+- 章节数据损坏（标题/正文/序号缺失或序号重复）：返回 422，错误码 `CHAPTER_DATA_CORRUPTED`，响应体包含损坏章节 ID 与原因。
+- 服务器磁盘写入失败：返回 500，错误码 `EXPORT_FILE_WRITE_FAILED`，与数据损坏错误明确区分。
+
+### 3.1 导出服务单元测试
+`ChapterExportServiceTest`（Mockito + JUnit 5）覆盖：
+- 已发布模式过滤草稿、按 orderNo 顺序合并；
+- 完整稿件模式包含草稿并标注【草稿】；
+- 文件名包含作品名（特殊字符已清洗）与当日日期；
+- 正文为空、序号重复时抛出 `ChapterDataCorruptedException`；
+- 作品不存在时抛出 `ResourceNotFoundException`；
+- 临时文件写入后可正确读回内容。
 
 ## 4. 兼容性测试
 - **设备**: 适配 PC 端 (1440px+) 和 移动端 (iPhone/Android)。

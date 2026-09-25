@@ -1,5 +1,13 @@
 # 任务列表 (Task List)
 
+## 章节导出（作者后台）
+- [x] Chapter 增加 status 字段（DRAFT/PUBLISHED），种子数据补充草稿章节 <!-- id: 20 -->
+- [x] 新增导出接口 `GET /api/novels/{id}/export?mode=published|full`，按 orderNo 顺序合并文本 <!-- id: 21 -->
+- [x] 导出文件名带作品名与日期（`作品名_YYYY-MM-DD_范围.txt`） <!-- id: 22 -->
+- [x] 区分导出失败原因：章节数据损坏（422 `CHAPTER_DATA_CORRUPTED`）与文件写入失败（500 `EXPORT_FILE_WRITE_FAILED`） <!-- id: 23 -->
+- [x] 后台导出页面 `/admin/export`：选作品、选范围、下载并按错误类型提示 <!-- id: 24 -->
+- [x] 导出服务单元测试与文档（用户手册、测试说明）更新 <!-- id: 25 -->
+
 ## 浅色主题重构
 - [x] 更新全局 CSS（浅色模式变量与重置） <!-- id: 10 -->
 - [x] 更新前端组件（首页、详情页、阅读页）以适配浅色主题 <!-- id: 11 -->
